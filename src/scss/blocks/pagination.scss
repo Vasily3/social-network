@@ -1,0 +1,57 @@
+.pagination {
+  display: flex;
+  padding: 0;
+  margin: 0;
+  margin-bottom: 10px;
+  list-style: none;
+
+  li {
+    flex-grow: 1;
+    border: none;
+    margin-right: 3px;
+    text-align: center;
+    cursor: pointer;
+    background-color: $dark;
+
+    a {
+      display: block;
+      padding: 10px;
+      text-decoration: none;
+      color: $light;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &:hover,
+    &:focus {
+      opacity: 0.7;
+    }
+  }
+
+  .disabled {
+    display: none;
+  }
+
+  .active {
+    a {
+      font-weight: bold;
+      color: $dark;
+      background-color: $light;
+      cursor: auto;
+    }
+
+    &:hover,
+    &:focus {
+      opacity: 1;
+    }
+  }
+
+  .previous a, .next a {
+    font-weight: bold;
+    color: $dark;
+    background-color: $light;
+  }
+}
+

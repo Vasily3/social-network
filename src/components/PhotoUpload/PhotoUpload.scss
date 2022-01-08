@@ -1,0 +1,28 @@
+.photo-upload {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+
+  &__text {
+    opacity: 0;
+    transition: 0.5s;
+    background-color: rgba(#0d1117, 0.7);
+    padding: 10% 0;
+    margin: 0;
+  }
+
+  &:hover .photo-upload__text,
+  &:focus .photo-upload__text {
+    opacity: 1;
+  }
+
+  &__dropzone {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+  }
+
+
+}
