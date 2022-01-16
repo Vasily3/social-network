@@ -1,33 +1,41 @@
 import React, {useEffect} from "react";
-import {connect} from "react-redux";
-import {follow, getUsers, setCurrentPage, unfollow} from "../../reducers/usersReducer";
+import {useDispatch, useSelector} from "react-redux";
+import {getUsers, setCurrentPage} from "../../reducers/usersReducer";
 import User from "../../components/User/User";
 import ReactPaginate from 'react-paginate';
 import {useHistory} from 'react-router-dom';
 import Preloader from "../../components/Preloader/Preloader";
 
 const Users = (props) => {
+    const dispatch = useDispatch();
+    const currentPage = useSelector((state) => state.users.currentPage);
+    const totalCount = useSelector((state) => state.users.totalCount);
+    const pageSize = useSelector((state) => state.users.pageSize);
+    const usersArr = useSelector((state) => state.users.usersArr);
+    const userId = useSelector((state) => state.auth.user);
+    const isFetching = useSelector((state) => state.auth.isFetching);
+
     useEffect(() => {
         if (props.match.params.num) {
-            props.getUsers(props.pageSize, props.match.params.num);
+            dispatch(getUsers(pageSize, props.match.params.num));
         } else {
-            props.getUsers(props.pageSize, props.currentPage);
+            dispatch(getUsers(pageSize, currentPage));
         }
 
-        return props.setCurrentPage(null);
-    }, [props.pageSize, props.currentPage]);
+        return dispatch(setCurrentPage(null));
+    }, [pageSize, currentPage]);
 
     const history = useHistory();
 
-    let pagesCount = Math.ceil(props.totalCount / props.pageSize);
+    let pagesCount = Math.ceil(totalCount / pageSize);
 
     const handlePageClick = (data) => {
         let selected = data.selected + 1;
         if (data.selected === 0) {
-            props.setCurrentPage(selected);
+            dispatch(setCurrentPage(selected));
             return history.push('/')
         } else {
-            props.setCurrentPage(selected);
+            dispatch(setCurrentPage(selected));
             history.push(`/page/${selected}`);
         }
     };
@@ -45,7 +53,7 @@ const Users = (props) => {
     };
 
     return (
-        <>{props.isFetching ? <Preloader/> : null}
+        <>{isFetching ? <Preloader/> : null}
             <ReactPaginate
                 previousLabel={'previous'}
                 nextLabel={'next'}
@@ -61,10 +69,9 @@ const Users = (props) => {
                 forcePage={setPageFromUrl()}
             />
             {
-                props.usersArr.map(user => {
+                usersArr.map(user => {
                     return (
-                        <User user={user} key={user.id} follow={props.follow} unfollow={props.unfollow}
-                              userId={props.userId}/>
+                        <User key={user.id} user={user} userId={userId}/>
                     );
                 })
             }
@@ -72,20 +79,4 @@ const Users = (props) => {
     );
 };
 
-const mapStateToProps = (state) => ({
-    currentPage: state.users.currentPage,
-    totalCount: state.users.totalCount,
-    pageSize: state.users.pageSize,
-    usersArr: state.users.usersArr,
-    userId: state.auth.user,
-    isFetching: state.auth.isFetching,
-});
-
-const mapDispatchToProps = {
-    getUsers: getUsers,
-    setCurrentPage: setCurrentPage,
-    follow: follow,
-    unfollow: unfollow,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Users);
+export default Users;

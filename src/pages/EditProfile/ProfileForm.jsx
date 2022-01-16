@@ -4,7 +4,7 @@ import Button from "../../components/Button/Button";
 import {useFormik} from "formik";
 import * as Yup from "yup";
 import {updateProfile} from "../../reducers/profileReducer";
-import {connect} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from 'react-router-dom';
 import {clearErrorMessage, setRedirect} from "../../reducers/authReducer";
 
@@ -22,12 +22,16 @@ const EditProfileSchema = Yup.object().shape({
     lookingForAJobDescription: Yup.string().required("Required")
 });
 
-const ProfileForm = ({profile, user, ...props}) => {
+const ProfileForm = ({profile}) => {
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.auth.user);
+    const errorMessage = useSelector((state) => state.auth.errorMessage);
+    const redirect = useSelector((state) => state.auth.redirect);
     const history = useHistory();
 
     useEffect(() => {
-        return () => props.clearErrorMessage();
-    },[props.clearErrorMessage]);
+        return () => dispatch(clearErrorMessage());
+    },[clearErrorMessage]);
 
     const formik = useFormik({
         initialValues: {
@@ -54,13 +58,13 @@ const ProfileForm = ({profile, user, ...props}) => {
         validationSchema: EditProfileSchema,
         validateOnChange: false,
         onSubmit: values => {
-            props.updateProfile(values);
+            dispatch(updateProfile(values));
         },
     });
 
-    if(props.redirect) {
+    if(redirect) {
         history.push('/settings');
-        props.setRedirect(false);
+        dispatch(setRedirect(false));
     }
 
     return (
@@ -102,21 +106,10 @@ const ProfileForm = ({profile, user, ...props}) => {
             />
             <Button buttonClass="form__button" text="Submit"/>
             {(Object.keys(formik.errors).length > 0) ? <div className="error">Error</div> : null}
-            {(props.errorMessage) ? <div className="error">{props.errorMessage}</div> : null}
+            {(errorMessage) ? <div className="error">{errorMessage}</div> : null}
         </form>
     );
 };
 
-const mapStateToProps = (state) => ({
-    user: state.auth.user,
-    errorMessage: state.auth.errorMessage,
-    redirect: state.auth.redirect
-});
 
-const mapDispatchToProps = {
-    updateProfile: updateProfile,
-    setRedirect: setRedirect,
-    clearErrorMessage: clearErrorMessage
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProfileForm);
+export default ProfileForm;

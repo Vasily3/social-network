@@ -1,16 +1,16 @@
 import React from "react";
 import cn from "classnames"
 
-const Button = (props) => {
+const Button = ({onClick, className, color, button, text}) => {
     return (
-        <button onClick={props.onClick}
+        <button onClick={onClick}
                 className={
-                    cn(props.className, "button",
-                    props.color === "red" ? "button--red" : null,
-                    props.color === "green" ? "button--green" : null,
+                    cn(className, "button",
+                    color === "red" ? "button--red" : null,
+                    color === "green" ? "button--green" : null,
                 )}
-                type={props.button? "button" : "submit"}
-        >{props.text}
+                type={button? "button" : "submit"}
+        >{text}
         </button>
     );
 };

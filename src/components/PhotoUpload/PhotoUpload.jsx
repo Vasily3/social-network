@@ -1,9 +1,12 @@
 import React, {useCallback} from 'react';
 import {useDropzone} from 'react-dropzone';
+import {useDispatch} from "react-redux";
+import {updateProfilePhoto} from "../../reducers/profileReducer";
 
-const PhotoUpload = ({updateProfilePhoto}) => {
+const PhotoUpload = () => {
+    const dispatch = useDispatch();
     const onDrop = useCallback(acceptedFiles => {
-        updateProfilePhoto(acceptedFiles[0])
+        dispatch(updateProfilePhoto(acceptedFiles[0]));
     }, []);
 
     const {getRootProps, getInputProps} = useDropzone({
