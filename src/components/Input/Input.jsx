@@ -1,19 +1,19 @@
 import React from "react";
 import cn from "classnames"
 
-const Input = (props) => {
+const Input = ({type, id, labelText, name, onChange, value, placeholder, checked, autoFocus}) => {
     return (
-        <div className={cn("field", { "field--checkbox": props.type === "checkbox"} )} >
-            <label htmlFor={props.id}>{props.labelText}</label>
+        <div className={cn("field", {"field--checkbox": type === "checkbox"})} >
+            <label htmlFor={id}>{labelText}</label>
             <input
-                id={props.id}
-                name={props.name}
-                type={props.type}
-                onChange={props.onChange}
-                value={props.value? props.value : null}
-                placeholder={props.placeholder? props.placeholder : null}
-                checked={props.checked}
-                autoFocus={props.autoFocus}
+                id={id}
+                name={name}
+                type={type}
+                onChange={onChange}
+                value={value? value : null}
+                placeholder={placeholder? placeholder : null}
+                checked={checked}
+                autoFocus={autoFocus}
             />
         </div>
     );

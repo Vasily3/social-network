@@ -4,7 +4,7 @@ import PhotoUpload from "../PhotoUpload/PhotoUpload";
 import Status from "../Status/Status";
 
 
-const Profile = ({profile, userId, updateProfilePhoto, location}) => {
+const Profile = ({profile, userId, location}) => {
     const prepareAddress = (address) => {
         return address.replace('https://', '').replace('http://', '');
     };
@@ -13,7 +13,7 @@ const Profile = ({profile, userId, updateProfilePhoto, location}) => {
         <div className="profile">
             <div className="profile__uploader">
                 {(userId === profile.userId && location === '/settings') &&
-                <PhotoUpload updateProfilePhoto={updateProfilePhoto}/>}
+                <PhotoUpload/>}
                 <img className="profile__img"
                      src={profile.photos.large ? profile.photos.large : noPhotoImg} alt=""/>
             </div>

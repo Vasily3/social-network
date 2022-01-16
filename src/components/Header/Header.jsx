@@ -1,10 +1,11 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
-import {connect} from "react-redux";
-import {logout} from "../../reducers/authReducer";
+import {useSelector} from "react-redux";
 
 
-const Header = ({isAuth, location}) => {
+const Header = ({location}) => {
+    const isAuth = useSelector((state) => state.auth.isAuth);
+
     if (isAuth) {
         return (
             <header className="header">
@@ -40,12 +41,4 @@ const Header = ({isAuth, location}) => {
     }
 };
 
-const mapStateToProps = (state) => ({
-    isAuth: state.auth.isAuth
-});
-
-const mapDispatchToProps = {
-    logout: logout
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default Header;

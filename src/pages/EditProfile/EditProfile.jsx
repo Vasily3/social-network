@@ -1,22 +1,26 @@
 import React, {useEffect} from "react";
-import {connect} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import ProfileForm from "./ProfileForm";
 import {getProfile} from "../../reducers/profileReducer";
 import Preloader from "../../components/Preloader/Preloader";
 import {WithAuthRedirect} from "../../hoc/withAuthRedirect";
-import {compose} from "redux";
 
-const EditProfile = (props) => {
+const EditProfile = () => {
+    const user = useSelector((state) => state.auth.user);
+    const profile = useSelector((state) => state.profile.profileData);
+    const isFetching = useSelector((state) => state.auth.isFetching);
+    const dispatch = useDispatch();
+
     useEffect(() => {
-        if (!props.isFetching) {
-            props.getProfile(props.user.id);
+        if (!isFetching) {
+            dispatch(getProfile(user.id));
         }
-    }, [props.isFetching]);
+    }, [isFetching]);
 
 
-    if (props.profile && props.user) {
+    if (profile && user) {
         return (
-            <ProfileForm profile={props.profile}/>
+            <ProfileForm profile={profile}/>
         )
 
     } else {
@@ -26,17 +30,5 @@ const EditProfile = (props) => {
     }
 };
 
-const mapStateToProps = (state) => ({
-    user: state.auth.user,
-    profile: state.profile.profileData,
-    isFetching: state.auth.isFetching
-});
 
-const mapDispatchToProps = {
-    getProfile: getProfile
-};
-
-export default compose(
-    connect(mapStateToProps, mapDispatchToProps),
-    WithAuthRedirect,
-)(EditProfile);
+export default WithAuthRedirect(EditProfile);

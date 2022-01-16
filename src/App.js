@@ -1,24 +1,18 @@
-import React, {useEffect} from "react";
+import React from "react";
 import "./scss/style.scss"
 import {Route, Switch, useLocation} from "react-router-dom";
-import {connect} from "react-redux";
-import {auth} from "./reducers/authReducer";
 import Header from "./components/Header/Header";
 import SignIn from "./pages/SignIn/SignIn";
 import Settings from "./pages/Settings/Settings";
 import Users from "./pages/Users/Users";
 import UserProfile from "./pages/UserProfile/UserProfile";
 import EditProfile from "./pages/EditProfile/EditProfile";
+import useAuth from "./hooks/useAuth";
 
-function App({isAuth, auth}) {
-    let location = useLocation();
+function App() {
+    const location = useLocation();
 
-    useEffect(() => {
-        if (!isAuth) {
-            auth()
-        }
-    }, [isAuth]);
-
+    useAuth();
 
     return (
         <>
@@ -37,12 +31,5 @@ function App({isAuth, auth}) {
     );
 }
 
-const mapStateToProps = (state) => ({
-    isAuth: state.auth.isAuth
-});
 
-const mapDispatchToProps = {
-    auth: auth
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

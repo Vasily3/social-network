@@ -1,10 +1,10 @@
 import React from "react";
-import { useFormik } from "formik";
+import {useFormik} from "formik";
 import * as Yup from "yup";
 import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input";
 import {login} from "../../reducers/authReducer";
-import {connect} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {Redirect} from "react-router-dom";
 import Captcha from "../../components/Captcha/Captcha";
 
@@ -13,7 +13,12 @@ const SignInSchema = Yup.object().shape({
     password: Yup.string().required("Required")
 });
 
-const SignIn = (props) => {
+const SignIn = () => {
+    const dispatch = useDispatch();
+    const isAuth = useSelector((state) => state.auth.isAuth);
+    const errorMessage = useSelector((state) => state.auth.errorMessage);
+    const captchaUrl = useSelector((state) => state.auth.captchaUrl);
+
     const formik = useFormik({
         initialValues: {
             email: "",
@@ -24,11 +29,11 @@ const SignIn = (props) => {
         validationSchema: SignInSchema,
         validateOnChange: false,
         onSubmit: values => {
-            props.login(values);
+            dispatch(login(values));
         },
     });
 
-    if (props.isAuth) {
+    if (isAuth) {
         return <Redirect to={"/"}/>
     }
 
@@ -59,25 +64,15 @@ const SignIn = (props) => {
                 value={formik.values.rememberMe}
             />
             <Button buttonClass="form__button" text="Submit"/>
-            {(props.captchaUrl)?
-                <Captcha image={props.captchaUrl} onChange={formik.handleChange} value={formik.values.captcha}/>
-                : null
-            }
-
-            {(Object.keys(formik.errors).length > 0)? <div className="error">Fill in All the Fields</div> : null}
-            {(props.errorMessage)? <div className="error">{props.errorMessage}</div> : null}
+            {(captchaUrl)?
+                <Captcha image={captchaUrl} onChange={formik.handleChange} value={formik.values.captcha}/> : null}
+            {(Object.keys(formik.errors).length > 0)?
+                <div className="error">Fill in All the Fields</div> : null}
+            {(errorMessage)?
+                <div className="error">{errorMessage}</div> : null}
         </form>
     );
 };
 
-const mapStateToProps = (state) => ({
-    isAuth: state.auth.isAuth,
-    errorMessage: state.auth.errorMessage,
-    captchaUrl: state.auth.captchaUrl,
-});
 
-const mapDispatchToProps = {
-    login: login
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
+export default SignIn;
