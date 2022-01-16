@@ -38,38 +38,43 @@ const Users = (props) => {
     };
 
     const setPageFromUrl = () => {
-        if(props.match.params.num) {
+        if (props.match.params.num) {
             return Number(props.match.params.num) - 1;
         }
         return 0;
     };
 
-    return (
-        <>{props.isFetching ? <Preloader/> : null}
-            <ReactPaginate
-                previousLabel={'previous'}
-                nextLabel={'next'}
-                breakLabel={'...'}
-                breakClassName={'break-me'}
-                pageCount={pagesCount}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={5}
-                onPageChange={handlePageClick}
-                containerClassName={'pagination'}
-                activeClassName={'active'}
-                hrefBuilder={buildHref}
-                forcePage={setPageFromUrl()}
-            />
-            {
-                props.usersArr.map(user => {
-                    return (
-                        <User user={user} key={user.id} follow={props.follow} unfollow={props.unfollow}
-                              userId={props.userId}/>
-                    );
-                })
-            }
-        </>
-    );
+    if (!props.isFetching) {
+        return (
+            <>
+                <ReactPaginate
+                    previousLabel={'previous'}
+                    nextLabel={'next'}
+                    breakLabel={'...'}
+                    breakClassName={'break-me'}
+                    pageCount={pagesCount}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={5}
+                    onPageChange={handlePageClick}
+                    containerClassName={'pagination'}
+                    activeClassName={'active'}
+                    hrefBuilder={buildHref}
+                    forcePage={setPageFromUrl()}
+                />
+                {
+                    props.usersArr.map(user => {
+                        return (
+                            <User user={user} key={user.id} follow={props.follow} unfollow={props.unfollow}
+                                  userId={props.userId}/>
+                        );
+                    })
+                }
+            </>
+        );
+    }
+    else {
+        return (<Preloader/>)
+    }
 };
 
 const mapStateToProps = (state) => ({

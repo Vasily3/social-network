@@ -1,4 +1,5 @@
 import {usersAPI} from "../api/api";
+import {toogleIsFetching} from "./authReducer";
 
 const SET_USERS = "SET_USERS";
 const SET_TOTAL_COUNT = "SET_TOTAL_COUNT";
@@ -78,9 +79,11 @@ export const setUnfollowing = (userId) => {
 
 export const getUsers = (pageSize, currentPage) => {
     return (dispatch) => {
+        dispatch(toogleIsFetching(true));
         usersAPI.requestUsers(pageSize, currentPage).then(data => {
             dispatch(setTotalCount(data.totalCount));
             dispatch(setUsers(data.items));
+            dispatch(toogleIsFetching(false));
         }, error => alert("Rejected: " + error.message));
     }
 };
