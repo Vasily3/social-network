@@ -1,21 +1,21 @@
-import {applyMiddleware, combineReducers, compose, createStore} from "redux";
-import thunkMiddleware from "redux-thunk";
-import authReducer from "./authReducer";
-import usersReducer from "./usersReducer";
-import profileReducer from "./profileReducer";
+import {combineReducers} from "redux";
+import authSlice from "./authSlice";
+import usersSlice from "./usersSlice";
+import profileSlice from "./profileSlice";
+import {configureStore} from '@reduxjs/toolkit';
 
-const reducers = combineReducers({
-    auth: authReducer,
-    users: usersReducer,
-    profile: profileReducer,
+
+const rootReducer = combineReducers({
+    auth: authSlice,
+    users: usersSlice,
+    profile: profileSlice,
 });
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const store = createStore(
-    reducers,
-    composeEnhancers(
-        applyMiddleware(thunkMiddleware)
-    )
-);
+const store = configureStore({
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({thunk: true, immutableCheck: false, serializableCheck: false,}),
+    devTools: process.env.NODE_ENV !== 'production',
+});
 
 export default store;

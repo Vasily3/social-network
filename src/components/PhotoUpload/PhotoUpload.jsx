@@ -1,7 +1,7 @@
 import React, {useCallback} from 'react';
 import {useDropzone} from 'react-dropzone';
 import {useDispatch} from "react-redux";
-import {updateProfilePhoto} from "../../reducers/profileReducer";
+import {updateProfilePhoto} from "../../reducers/profileSlice";
 
 const PhotoUpload = () => {
     const dispatch = useDispatch();

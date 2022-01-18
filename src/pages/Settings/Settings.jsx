@@ -1,9 +1,9 @@
 import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {clearErrorMessage, logout} from "../../reducers/authReducer";
+import {clearErrorMessage, logout} from "../../reducers/authSlice";
 import Button from "../../components/Button/Button";
 import {Link} from "react-router-dom";
-import {clearProfile, getProfile} from "../../reducers/profileReducer";
+import {clearProfile, getProfile} from "../../reducers/profileSlice";
 import Preloader from "../../components/Preloader/Preloader";
 import Profile from "../../components/Profile/Profile";
 import {WithAuthRedirect} from "../../hoc/withAuthRedirect";

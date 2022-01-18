@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import Profile from "../../components/Profile/Profile";
-import {clearProfile, getProfile} from "../../reducers/profileReducer";
+import {clearProfile, getProfile} from "../../reducers/profileSlice";
 import {useDispatch, useSelector} from "react-redux";
 import Preloader from "../../components/Preloader/Preloader";
 

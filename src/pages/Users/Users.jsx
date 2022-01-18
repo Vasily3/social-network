@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {getUsers, setCurrentPage} from "../../reducers/usersReducer";
+import {getUsers, setCurrentPage} from "../../reducers/usersSlice";
 import User from "../../components/User/User";
 import ReactPaginate from 'react-paginate';
 import {useHistory} from 'react-router-dom';

@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import ProfileForm from "./ProfileForm";
-import {getProfile} from "../../reducers/profileReducer";
+import {getProfile} from "../../reducers/profileSlice";
 import Preloader from "../../components/Preloader/Preloader";
 import {WithAuthRedirect} from "../../hoc/withAuthRedirect";
 

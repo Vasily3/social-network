@@ -1,52 +1,30 @@
 import {profileAPI} from "../api/api";
-import {addErrorMessage, setRedirect, toogleIsFetching} from "./authReducer";
+import {addErrorMessage, setRedirect, toogleIsFetching} from "./authSlice";
+import {createSlice} from "@reduxjs/toolkit";
 
 
-const SET_PROFILE = "SET_PROFILE";
-const CLEAR_PROFILE = "CLEAR_PROFILE";
-const SET_PROFILE_PHOTO = "SET_PROFILE_PHOTO";
-const SET_STATUS = "SET_STATUS";
-
-const initialState = {
-    profileData: null,
-    status: "",
-};
-
-const profileReducer = (state = initialState, action) => {
-    switch (action.type) {
-        case SET_PROFILE: {
-            return {
-                ...state,
-                profileData: action.data,
-            };
+const profileSlice = createSlice({
+    name: "profile",
+    initialState: {
+        profileData: null,
+        status: "",
+    },
+    reducers: {
+        setProfile(state, action) {
+           state.profileData = action.payload;
+        },
+        clearProfile(state) {
+            state.profileData = null;
+        },
+        setProfilePhoto(state, action) {
+            state.profileData = {...state.profileData, photos: action.payload};
+        },
+        setStatus(state, action) {
+            state.status = action.status;
         }
-        case CLEAR_PROFILE: {
-            return {
-                ...state,
-                profileData: null,
-            };
-        }
-        case SET_PROFILE_PHOTO: {
-            return {
-                ...state,
-                profileData: {...state.profileData, photos: action.photo},
-            };
-        }
-        case SET_STATUS: {
-            return {
-                ...state,
-                status: action.status
-            }
-        }
-        default:
-            return state;
     }
-};
+});
 
-const setProfile = (data) => {return {type: SET_PROFILE, data}};
-export const clearProfile = () => {return {type: CLEAR_PROFILE}};
-const setProfilePhoto = (photo) => {return {type: SET_PROFILE_PHOTO, photo}};
-export const setStatus = (status) => {return {type: SET_STATUS, status}};
 
 export const getProfile = (userId) => {
     return (dispatch) => {
@@ -115,4 +93,5 @@ export const updateStatus = (status) => {
     }
 };
 
-export default profileReducer;
+export default profileSlice.reducer;
+export const {setProfile, clearProfile, setProfilePhoto, setStatus} = profileSlice.actions;

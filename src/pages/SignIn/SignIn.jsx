@@ -3,7 +3,7 @@ import {useFormik} from "formik";
 import * as Yup from "yup";
 import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input";
-import {login} from "../../reducers/authReducer";
+import {login} from "../../reducers/authSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {Redirect} from "react-router-dom";
 import Captcha from "../../components/Captcha/Captcha";

@@ -3,10 +3,10 @@ import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
 import {useFormik} from "formik";
 import * as Yup from "yup";
-import {updateProfile} from "../../reducers/profileReducer";
+import {updateProfile} from "../../reducers/profileSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from 'react-router-dom';
-import {clearErrorMessage, setRedirect} from "../../reducers/authReducer";
+import {clearErrorMessage, setRedirect} from "../../reducers/authSlice";
 
 const EditProfileSchema = Yup.object().shape({
     aboutMe: Yup.string().required("Required"),

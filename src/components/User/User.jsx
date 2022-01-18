@@ -3,7 +3,7 @@ import Button from "../Button/Button";
 import {Link} from "react-router-dom";
 import noPhotoImg from "../../img/user-small.jpg"
 import {useDispatch} from "react-redux";
-import {follow, unfollow} from "../../reducers/usersReducer";
+import {follow, unfollow} from "../../reducers/usersSlice";
 
 
 const User = ({user}) => {
