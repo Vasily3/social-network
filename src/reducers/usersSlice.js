@@ -1,5 +1,6 @@
 import {usersAPI} from "../api/api";
 import {createSlice} from "@reduxjs/toolkit";
+import {toogleIsFetching} from "./authSlice";
 
 const usersSlice = createSlice({
     name: "users",
@@ -40,9 +41,11 @@ const usersSlice = createSlice({
 
 export const getUsers = (pageSize, currentPage) => {
     return (dispatch) => {
+        dispatch(toogleIsFetching(true));
         usersAPI.requestUsers(pageSize, currentPage).then(data => {
             dispatch(setTotalCount(data.totalCount));
             dispatch(setUsers(data.items));
+            dispatch(toogleIsFetching(false));
         }, error => alert("Rejected: " + error.message));
     }
 };

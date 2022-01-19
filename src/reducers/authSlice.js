@@ -43,7 +43,7 @@ const authSlice = createSlice({
 
 export const auth = () => {
     return (dispatch) => {
-        toogleIsFetching(true);
+        dispatch(toogleIsFetching(true));
         authAPI.auth().then(data => {
             if (data.resultCode === 0) {
                 dispatch(setUserData(data.data));
@@ -55,7 +55,7 @@ export const auth = () => {
 
 export const login = (payload) => {
     return (dispatch) => {
-        toogleIsFetching(true);
+        dispatch(toogleIsFetching(true));
         authAPI.login(payload).then(data => {
             if (data.resultCode === 0) {
                 dispatch(loginUser());

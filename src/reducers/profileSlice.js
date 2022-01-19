@@ -11,7 +11,7 @@ const profileSlice = createSlice({
     },
     reducers: {
         setProfile(state, action) {
-           state.profileData = action.payload;
+            state.profileData = action.payload;
         },
         clearProfile(state) {
             state.profileData = null;
@@ -20,7 +20,7 @@ const profileSlice = createSlice({
             state.profileData = {...state.profileData, photos: action.payload};
         },
         setStatus(state, action) {
-            state.status = action.status;
+            state.status = action.payload;
         }
     }
 });
@@ -28,17 +28,17 @@ const profileSlice = createSlice({
 
 export const getProfile = (userId) => {
     return (dispatch) => {
-        toogleIsFetching(true);
+        dispatch(toogleIsFetching(true));
         profileAPI.requestProfile(userId).then((data) => {
             dispatch(setProfile(data));
         }, error => alert("Rejected: " + error.message));
-        toogleIsFetching(false);
+        dispatch(toogleIsFetching(false));
     }
 };
 
 export const updateProfile = (data) => {
     return (dispatch) => {
-        toogleIsFetching(true);
+        dispatch(toogleIsFetching(true));
         profileAPI.updateProfile(data).then((response) => {
             if (response.resultCode === 0) {
                 dispatch(setProfile(data));
@@ -47,13 +47,13 @@ export const updateProfile = (data) => {
                 dispatch(addErrorMessage(response.messages));
             }
         }, error => alert("Rejected: " + error.message));
-        toogleIsFetching(false);
+        dispatch(toogleIsFetching(false));
     }
 };
 
 export const updateProfilePhoto = (file) => {
     return (dispatch) => {
-        toogleIsFetching(true);
+        dispatch(toogleIsFetching(true));
         profileAPI.updateProfilePhoto(file).then((response) => {
             if (response.resultCode === 0) {
                 dispatch(setProfilePhoto(response.data.photos));
@@ -61,13 +61,13 @@ export const updateProfilePhoto = (file) => {
                 dispatch(addErrorMessage(response.messages));
             }
         }, error => alert("Rejected: " + error.message));
-        toogleIsFetching(false);
+        dispatch(toogleIsFetching(false));
     }
 };
 
 export const getStatus = (userId) => {
     return (dispatch) => {
-        toogleIsFetching(true);
+        dispatch(toogleIsFetching(true));
         profileAPI.requestStatus(userId).then((response) => {
             if (response.status === 200) {
                 dispatch(setStatus(response.data));
@@ -75,13 +75,13 @@ export const getStatus = (userId) => {
                 dispatch(addErrorMessage("error: " + response.status));
             }
         }, error => alert("Rejected: " + error.message));
-        toogleIsFetching(false);
+        dispatch(toogleIsFetching(false));
     }
 };
 
 export const updateStatus = (status) => {
     return (dispatch) => {
-        toogleIsFetching(true);
+        dispatch(toogleIsFetching(true));
         profileAPI.updateStatus(status).then((response) => {
             if (response.resultCode === 0) {
                 dispatch(setStatus(status));
@@ -89,7 +89,7 @@ export const updateStatus = (status) => {
                 dispatch(addErrorMessage(response.messages));
             }
         }, error => alert("Rejected: " + error.message));
-        toogleIsFetching(false);
+        dispatch(toogleIsFetching(false));
     }
 };
 

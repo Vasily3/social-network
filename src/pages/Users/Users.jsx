@@ -46,14 +46,20 @@ const Users = (props) => {
     };
 
     const setPageFromUrl = () => {
-        if(props.match.params.num) {
+        if (props.match.params.num) {
             return Number(props.match.params.num) - 1;
         }
         return 0;
     };
 
+    if (isFetching) {
+        return (
+            <Preloader/>
+        )
+    }
+
     return (
-        <>{isFetching ? <Preloader/> : null}
+        <>
             <ReactPaginate
                 previousLabel={'previous'}
                 nextLabel={'next'}
