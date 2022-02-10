@@ -1,7 +1,7 @@
 import {combineReducers} from "redux";
-import authSlice from "./authSlice";
-import usersSlice from "./usersSlice";
-import profileSlice from "./profileSlice";
+import authSlice from "./auth/authSlice";
+import usersSlice from "./users/usersSlice";
+import profileSlice from "./profile/profileSlice";
 import {configureStore} from '@reduxjs/toolkit';
 
 
@@ -18,4 +18,6 @@ const store = configureStore({
     devTools: process.env.NODE_ENV !== 'production',
 });
 
+export type RootState = ReturnType<typeof rootReducer>
+export type AppDispatch = typeof store.dispatch;
 export default store;

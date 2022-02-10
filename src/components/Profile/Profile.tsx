@@ -1,11 +1,18 @@
-import React from "react";
+import React, {VFC} from "react";
 import noPhotoImg from "../../img/user.jpg"
 import PhotoUpload from "../PhotoUpload/PhotoUpload";
 import Status from "../Status/Status";
+import {TProfileDataPhotos} from "../../reducers/profile/types";
 
 
-const Profile = ({profile, userId, location}) => {
-    const prepareAddress = (address) => {
+interface TProps {
+    location: string,
+    profile: TProfileDataPhotos,
+    userId: number | null | undefined,
+}
+
+const Profile: VFC<TProps> = ({profile, userId, location}: TProps) => {
+    const prepareAddress = (address: string) => {
         return address.replace('https://', '').replace('http://', '');
     };
 

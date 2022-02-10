@@ -1,9 +1,10 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, VFC} from 'react';
 import {useDropzone} from 'react-dropzone';
 import {useDispatch} from "react-redux";
-import {updateProfilePhoto} from "../../reducers/profileSlice";
+import {updateProfilePhoto} from "../../reducers/profile/profileSlice";
 
-const PhotoUpload = () => {
+
+const PhotoUpload: VFC = () => {
     const dispatch = useDispatch();
     const onDrop = useCallback(acceptedFiles => {
         dispatch(updateProfilePhoto(acceptedFiles[0]));
@@ -17,7 +18,7 @@ const PhotoUpload = () => {
         getFilesFromEvent: event => fileGetter(event)
     });
 
-    async function fileGetter(event) {
+    async function fileGetter(event: any) {
         const files = [];
         const fileList = event.dataTransfer ? event.dataTransfer.files : event.target.files;
         for (let i = 0; i < fileList.length; i++) {

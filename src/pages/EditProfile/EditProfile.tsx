@@ -1,18 +1,19 @@
-import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, {useEffect, VFC} from "react";
+import {useDispatch} from "react-redux";
 import ProfileForm from "./ProfileForm";
-import {getProfile} from "../../reducers/profileSlice";
+import {getProfile} from "../../reducers/profile/profileSlice";
 import Preloader from "../../components/Preloader/Preloader";
 import {WithAuthRedirect} from "../../hoc/withAuthRedirect";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
 
-const EditProfile = () => {
-    const user = useSelector((state) => state.auth.user);
-    const profile = useSelector((state) => state.profile.profileData);
-    const isFetching = useSelector((state) => state.auth.isFetching);
+const EditProfile: VFC = () => {
+    const user = useTypedSelector((state) => state.auth.user);
+    const profile = useTypedSelector((state) => state.profile.profileData);
+    const isFetching = useTypedSelector((state) => state.auth.isFetching);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (!isFetching) {
+        if (!isFetching && user) {
             dispatch(getProfile(user.id));
         }
     }, [isFetching]);

@@ -1,14 +1,18 @@
-import {profileAPI} from "../api/api";
-import {addErrorMessage, setRedirect, toogleIsFetching} from "./authSlice";
+import {profileAPI} from "../../api/api";
 import {createSlice} from "@reduxjs/toolkit";
+import {AppDispatch} from "../index";
+import {addErrorMessage, setRedirect, toogleIsFetching } from "../auth/authSlice";
+import {InitialStateType, TProfileData} from "./types";
 
+
+const initialState = {
+    profileData: null,
+    status: "",
+} as InitialStateType;
 
 const profileSlice = createSlice({
     name: "profile",
-    initialState: {
-        profileData: null,
-        status: "",
-    },
+    initialState,
     reducers: {
         setProfile(state, action) {
             state.profileData = action.payload;
@@ -17,7 +21,9 @@ const profileSlice = createSlice({
             state.profileData = null;
         },
         setProfilePhoto(state, action) {
-            state.profileData = {...state.profileData, photos: action.payload};
+            if (state.profileData) {
+                state.profileData.photos = action.payload
+            }
         },
         setStatus(state, action) {
             state.status = action.payload;
@@ -26,22 +32,22 @@ const profileSlice = createSlice({
 });
 
 
-export const getProfile = (userId) => {
-    return (dispatch) => {
+export const getProfile = (userId: number) => {
+    return (dispatch: AppDispatch) => {
         dispatch(toogleIsFetching(true));
-        profileAPI.requestProfile(userId).then((data) => {
-            dispatch(setProfile(data));
+        profileAPI.requestProfile(userId).then((response) => {
+            dispatch(setProfile(response));
         }, error => alert("Rejected: " + error.message));
         dispatch(toogleIsFetching(false));
     }
 };
 
-export const updateProfile = (data) => {
-    return (dispatch) => {
+export const updateProfile = (payload: TProfileData) => {
+    return (dispatch: AppDispatch) => {
         dispatch(toogleIsFetching(true));
-        profileAPI.updateProfile(data).then((response) => {
+        profileAPI.updateProfile(payload).then((response) => {
             if (response.resultCode === 0) {
-                dispatch(setProfile(data));
+                dispatch(setProfile(payload));
                 dispatch(setRedirect(true));
             } else if (response.resultCode === 1) {
                 dispatch(addErrorMessage(response.messages));
@@ -51,8 +57,8 @@ export const updateProfile = (data) => {
     }
 };
 
-export const updateProfilePhoto = (file) => {
-    return (dispatch) => {
+export const updateProfilePhoto = (file: string | Blob) => {
+    return (dispatch: AppDispatch) => {
         dispatch(toogleIsFetching(true));
         profileAPI.updateProfilePhoto(file).then((response) => {
             if (response.resultCode === 0) {
@@ -65,9 +71,8 @@ export const updateProfilePhoto = (file) => {
     }
 };
 
-export const getStatus = (userId) => {
-    return (dispatch) => {
-        dispatch(toogleIsFetching(true));
+export const getStatus = (userId: number) => {
+    return (dispatch: AppDispatch) => {
         profileAPI.requestStatus(userId).then((response) => {
             if (response.status === 200) {
                 dispatch(setStatus(response.data));
@@ -75,13 +80,11 @@ export const getStatus = (userId) => {
                 dispatch(addErrorMessage("error: " + response.status));
             }
         }, error => alert("Rejected: " + error.message));
-        dispatch(toogleIsFetching(false));
     }
 };
 
-export const updateStatus = (status) => {
-    return (dispatch) => {
-        dispatch(toogleIsFetching(true));
+export const updateStatus = (status: string) => {
+    return (dispatch: AppDispatch) => {
         profileAPI.updateStatus(status).then((response) => {
             if (response.resultCode === 0) {
                 dispatch(setStatus(status));
@@ -89,7 +92,6 @@ export const updateStatus = (status) => {
                 dispatch(addErrorMessage(response.messages));
             }
         }, error => alert("Rejected: " + error.message));
-        dispatch(toogleIsFetching(false));
     }
 };
 

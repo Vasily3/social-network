@@ -1,12 +1,14 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {useFormik} from "formik";
 import * as Yup from "yup";
 import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input";
-import {login} from "../../reducers/authSlice";
-import {useDispatch, useSelector} from "react-redux";
+import {clearErrorMessage, login} from "../../reducers/auth/authSlice";
+import {useDispatch} from "react-redux";
 import {Redirect} from "react-router-dom";
 import Captcha from "../../components/Captcha/Captcha";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
+
 
 const SignInSchema = Yup.object().shape({
     email: Yup.string().required("Required"),
@@ -15,9 +17,13 @@ const SignInSchema = Yup.object().shape({
 
 const SignIn = () => {
     const dispatch = useDispatch();
-    const isAuth = useSelector((state) => state.auth.isAuth);
-    const errorMessage = useSelector((state) => state.auth.errorMessage);
-    const captchaUrl = useSelector((state) => state.auth.captchaUrl);
+    const isAuth = useTypedSelector((state) => state.auth.isAuth);
+    const errorMessage = useTypedSelector((state) => state.auth.errorMessage);
+    const captchaUrl = useTypedSelector((state) => state.auth.captchaUrl);
+
+    useEffect(() => {
+        return() => {dispatch(clearErrorMessage())}
+    },[errorMessage]);
 
     const formik = useFormik({
         initialValues: {
@@ -46,6 +52,7 @@ const SignIn = () => {
                 type="text"
                 onChange={formik.handleChange}
                 value={formik.values.email}
+                autoComplete="true"
             />
             <Input
                 labelText="Password"
@@ -63,7 +70,7 @@ const SignIn = () => {
                 onChange={formik.handleChange}
                 value={formik.values.rememberMe}
             />
-            <Button buttonClass="form__button" text="Submit"/>
+            <Button className="form__button" text="Submit"/>
             {(captchaUrl)?
                 <Captcha image={captchaUrl} onChange={formik.handleChange} value={formik.values.captcha}/> : null}
             {(Object.keys(formik.errors).length > 0)?

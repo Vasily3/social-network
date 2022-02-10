@@ -1,16 +1,22 @@
-import {authAPI, securityAPI} from "../api/api";
+import {authAPI, securityAPI} from "../../api/api";
 import {createSlice} from "@reduxjs/toolkit";
+import {AppDispatch} from "../index";
+import {AuthLoginRequest} from "../../api/types";
+import {InitialStateType} from "./types";
+
+
+const initialState = {
+    isAuth: false,
+    user: null,
+    errorMessage: null,
+    captchaUrl: null,
+    isFetching: true,
+    redirect: false,
+} as InitialStateType;
 
 const authSlice = createSlice({
     name: "auth",
-    initialState: {
-        isAuth: false,
-        user: null,
-        errorMessage: null,
-        captchaUrl: null,
-        isFetching: true,
-        redirect: false,
-    },
+    initialState,
     reducers: {
         setUserData(state, action) {
             state.isAuth = true;
@@ -42,38 +48,38 @@ const authSlice = createSlice({
 });
 
 export const auth = () => {
-    return (dispatch) => {
+    return (dispatch: AppDispatch) => {
         dispatch(toogleIsFetching(true));
-        authAPI.auth().then(data => {
-            if (data.resultCode === 0) {
-                dispatch(setUserData(data.data));
+        authAPI.auth().then((response) => {
+            if (response.resultCode === 0) {
+                dispatch(setUserData(response.data));
             }
-            dispatch(toogleIsFetching(false));
         }, error => alert("Rejected: " + error.message));
+        dispatch(toogleIsFetching(false));
     }
 };
 
-export const login = (payload) => {
-    return (dispatch) => {
+export const login = (payload: AuthLoginRequest) => {
+    return (dispatch: AppDispatch) => {
         dispatch(toogleIsFetching(true));
-        authAPI.login(payload).then(data => {
-            if (data.resultCode === 0) {
+        authAPI.login(payload).then((response) => {
+            if (response.resultCode === 0) {
                 dispatch(loginUser());
                 dispatch(auth());
-            } else if (data.resultCode === 1) {
-                dispatch(addErrorMessage(data.messages[0]));
-            } else if (data.resultCode === 10) {
-                securityAPI.requestCaptcha().then(data => {
-                    dispatch(showCaptcha(data.url));
+            } else if (response.resultCode === 1) {
+                dispatch(addErrorMessage(response.messages[0]));
+            } else if (response.resultCode === 10) {
+                securityAPI.requestCaptcha().then((response) => {
+                    dispatch(showCaptcha(response.url));
                 }, error => alert("Rejected: " + error.message));
             }
-            dispatch(toogleIsFetching(false));
         }, error => alert("Rejected: " + error.message));
+        dispatch(toogleIsFetching(false));
     }
 };
 
 export const logout = () => {
-    return (dispatch) => {
+    return (dispatch: AppDispatch) => {
         authAPI.logout().then(() => {
             dispatch(clearUserData());
         }, error => alert("Rejected: " + error.message));

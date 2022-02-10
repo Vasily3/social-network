@@ -1,15 +1,20 @@
-import {usersAPI} from "../api/api";
+import {usersAPI} from "../../api/api";
 import {createSlice} from "@reduxjs/toolkit";
-import {toogleIsFetching} from "./authSlice";
+import {addErrorMessage, toogleIsFetching} from "../auth/authSlice";
+import {AppDispatch} from "../index";
+import {InitialStateType} from "./types";
+
+
+const initialState = {
+    usersArr: [],
+    currentPage: 1,
+    totalCount: 0,
+    pageSize: 10,
+} as InitialStateType;
 
 const usersSlice = createSlice({
     name: "users",
-    initialState: {
-        usersArr: [],
-        currentPage: null,
-        totalCount: null,
-        pageSize: 10,
-    },
+    initialState,
     reducers: {
         setUsers(state, action) {
             state.usersArr = action.payload;
@@ -39,29 +44,38 @@ const usersSlice = createSlice({
     }
 });
 
-export const getUsers = (pageSize, currentPage) => {
-    return (dispatch) => {
+
+export const getUsers = (pageSize: number, currentPage: number) => {
+    return (dispatch: AppDispatch) => {
         dispatch(toogleIsFetching(true));
-        usersAPI.requestUsers(pageSize, currentPage).then(data => {
-            dispatch(setTotalCount(data.totalCount));
-            dispatch(setUsers(data.items));
+        usersAPI.requestUsers(pageSize, currentPage).then((response) => {
+            dispatch(setTotalCount(response.totalCount));
+            dispatch(setUsers(response.items));
             dispatch(toogleIsFetching(false));
         }, error => alert("Rejected: " + error.message));
     }
 };
 
-export const follow = (userId) => {
-    return (dispatch) => {
-        usersAPI.follow(userId).then(() => {
-            dispatch(setFollowing(userId));
+export const follow = (userId: number) => {
+    return (dispatch: AppDispatch) => {
+        usersAPI.follow(userId).then((response) => {
+            if (response.resultCode === 0) {
+                dispatch(setFollowing(userId));
+            } else if (response.resultCode === 1) {
+                dispatch(addErrorMessage(response.messages));
+            }
         }, error => alert("Rejected: " + error.message));
     }
 };
 
-export const unfollow = (userId) => {
-    return (dispatch) => {
-        usersAPI.unfollow(userId).then(() => {
-            dispatch(setUnfollowing(userId));
+export const unfollow = (userId: number) => {
+    return (dispatch: AppDispatch) => {
+        usersAPI.unfollow(userId).then((response) => {
+            if (response.resultCode === 0) {
+                dispatch(setUnfollowing(userId));
+            } else if (response.resultCode === 1) {
+                dispatch(addErrorMessage(response.messages));
+            }
         }, error => alert("Rejected: " + error.message));
     }
 };
