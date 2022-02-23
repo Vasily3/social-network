@@ -1,10 +1,14 @@
-import React from "react";
-import {NavLink} from "react-router-dom";
-import {useSelector} from "react-redux";
+import React, {VFC} from "react";
+import {NavLink, RouteComponentProps} from "react-router-dom";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
 
 
-const Header = ({location}) => {
-    const isAuth = useSelector((state) => state.auth.isAuth);
+interface TProps {
+    location: RouteComponentProps['location'];
+}
+
+const Header: VFC<TProps> = ({location}: TProps) => {
+    const isAuth = useTypedSelector((state) => state.auth.isAuth);
 
     if (isAuth) {
         return (
@@ -16,14 +20,13 @@ const Header = ({location}) => {
                     }
                     {location.pathname === "/settings" ?
                         <div className="header__links">
-                            <NavLink className="header__link" to="/">--> Users</NavLink>
+                            <NavLink className="header__link" to="/">--&gt; Users</NavLink>
                         </div>
                         :
                         <div className="header__links">
                             <NavLink className="header__link" to="/settings">Settings</NavLink>
                         </div>
                     }
-
                 </div>
             </header>
         );
@@ -41,4 +44,4 @@ const Header = ({location}) => {
     }
 };
 
-export default Header;
+export default React.memo(Header);

@@ -1,37 +1,39 @@
-import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {getUsers, setCurrentPage} from "../../reducers/usersSlice";
+import React, {useEffect, VFC} from "react";
+import {useDispatch} from "react-redux";
+import {getUsers, setCurrentPage} from "../../reducers/users/usersSlice";
 import User from "../../components/User/User";
-import ReactPaginate from 'react-paginate';
-import {useHistory} from 'react-router-dom';
+import ReactPaginate from "react-paginate";
+import {useHistory} from "react-router-dom";
 import Preloader from "../../components/Preloader/Preloader";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {TProps} from "./types";
 
-const Users = (props) => {
+
+const Users: VFC<TProps> = (props: TProps) => {
     const dispatch = useDispatch();
-    const currentPage = useSelector((state) => state.users.currentPage);
-    const totalCount = useSelector((state) => state.users.totalCount);
-    const pageSize = useSelector((state) => state.users.pageSize);
-    const usersArr = useSelector((state) => state.users.usersArr);
-    const userId = useSelector((state) => state.auth.user);
-    const isFetching = useSelector((state) => state.auth.isFetching);
+    const currentPage = useTypedSelector((state) => state.users.currentPage);
+    const totalCount = useTypedSelector((state) => state.users.totalCount);
+    const pageSize = useTypedSelector((state) => state.users.pageSize);
+    const usersArr = useTypedSelector((state) => state.users.usersArr);
+    const isFetching = useTypedSelector((state) => state.auth.isFetching);
 
     useEffect(() => {
         if (props.match.params.num) {
             dispatch(getUsers(pageSize, props.match.params.num));
+            dispatch(setCurrentPage(props.match.params.num));
         } else {
             dispatch(getUsers(pageSize, currentPage));
         }
 
-        return dispatch(setCurrentPage(null));
-    }, [pageSize, currentPage]);
+    }, [props.location]);
 
     const history = useHistory();
 
     let pagesCount = Math.ceil(totalCount / pageSize);
 
-    const handlePageClick = (data) => {
-        let selected = data.selected + 1;
-        if (data.selected === 0) {
+    const handlePageClick = (event: { selected: number }) => {
+        let selected = event.selected + 1;
+        if (event.selected === 0) {
             dispatch(setCurrentPage(selected));
             return history.push('/')
         } else {
@@ -40,7 +42,7 @@ const Users = (props) => {
         }
     };
 
-    const buildHref = (data) => {
+    const buildHref = (data: number) => {
         let selected = `/page/${data}`;
         return selected;
     };
@@ -68,16 +70,16 @@ const Users = (props) => {
                 pageCount={pagesCount}
                 marginPagesDisplayed={2}
                 pageRangeDisplayed={5}
-                onPageChange={handlePageClick}
                 containerClassName={'pagination'}
                 activeClassName={'active'}
+                onPageChange={handlePageClick}
                 hrefBuilder={buildHref}
                 forcePage={setPageFromUrl()}
             />
             {
                 usersArr.map(user => {
                     return (
-                        <User key={user.id} user={user} userId={userId}/>
+                        <User key={user.id} user={user}/>
                     );
                 })
             }

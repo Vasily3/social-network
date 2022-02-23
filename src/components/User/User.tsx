@@ -1,19 +1,24 @@
-import React from "react";
+import React, {VFC} from "react";
 import Button from "../Button/Button";
 import {Link} from "react-router-dom";
 import noPhotoImg from "../../img/user-small.jpg"
 import {useDispatch} from "react-redux";
-import {follow, unfollow} from "../../reducers/usersSlice";
+import {follow, unfollow} from "../../reducers/users/usersSlice";
+import { TUserType } from "../../reducers/users/types";
 
+interface TProps {
+    user: TUserType
+}
 
-const User = ({user}) => {
+const User: VFC<TProps> = ({user}: TProps) => {
     const dispatch = useDispatch();
     const userPhoto = user.photos.small;
 
     return (
         <div className="user">
             <div className="user__img-block">
-                <Link to={`/profile/${user.id}`}><img className="user__img" src={userPhoto ? userPhoto : noPhotoImg} alt=""/></Link>
+                <Link to={`/profile/${user.id}`}><img className="user__img" src={userPhoto ? userPhoto : noPhotoImg}
+                                                      alt=""/></Link>
             </div>
             <div className="user__info">
                 <Link className="user__link" to={`/profile/${user.id}`}><p className="user__name">{user.name}</p></Link>

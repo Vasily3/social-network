@@ -1,7 +1,16 @@
-import React from "react";
+import React, {VFC} from "react";
 import cn from "classnames"
 
-const Button = ({onClick, className, color, button, text}) => {
+interface TButton {
+    onClick?: any,
+    className?: string,
+    color?: string,
+    button?: string,
+    text?: string,
+    type?: string
+}
+
+const Button: VFC<TButton> = ({onClick, className, color, button, text}: TButton) => {
     return (
         <button onClick={onClick}
                 className={

@@ -1,12 +1,14 @@
-import React, {useEffect} from "react";
+import React, {useEffect, VFC} from "react";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
 import {useFormik} from "formik";
 import * as Yup from "yup";
-import {updateProfile} from "../../reducers/profileSlice";
-import {useDispatch, useSelector} from "react-redux";
+import {updateProfile} from "../../reducers/profile/profileSlice";
+import {clearErrorMessage, setRedirect} from "../../reducers/auth/authSlice";
+import {useDispatch} from "react-redux";
 import {useHistory} from 'react-router-dom';
-import {clearErrorMessage, setRedirect} from "../../reducers/authSlice";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {TProps} from "./types";
 
 const EditProfileSchema = Yup.object().shape({
     aboutMe: Yup.string().required("Required"),
@@ -22,16 +24,18 @@ const EditProfileSchema = Yup.object().shape({
     lookingForAJobDescription: Yup.string().required("Required")
 });
 
-const ProfileForm = ({profile}) => {
+const ProfileForm: VFC<TProps> = ({profile}: TProps) => {
     const dispatch = useDispatch();
-    const user = useSelector((state) => state.auth.user);
-    const errorMessage = useSelector((state) => state.auth.errorMessage);
-    const redirect = useSelector((state) => state.auth.redirect);
+    const user = useTypedSelector((state) => state.auth.user);
+    const errorMessage = useTypedSelector((state) => state.auth.errorMessage);
+    const redirect = useTypedSelector((state) => state.auth.redirect);
     const history = useHistory();
 
     useEffect(() => {
-        return () => dispatch(clearErrorMessage());
-    },[clearErrorMessage]);
+        return () => {
+            dispatch(clearErrorMessage())
+        };
+    }, [clearErrorMessage]);
 
     const formik = useFormik({
         initialValues: {
@@ -48,8 +52,8 @@ const ProfileForm = ({profile}) => {
             },
             lookingForAJob: profile.lookingForAJob,
             lookingForAJobDescription: profile.lookingForAJobDescription,
-            fullName: user.login,
-            userId: user.id,
+            fullName: user? user.login : "Unknown",
+            userId: user? user.id : 0,
             photos: {
                 small: profile.photos.small,
                 large: profile.photos.large,
@@ -62,7 +66,7 @@ const ProfileForm = ({profile}) => {
         },
     });
 
-    if(redirect) {
+    if (redirect) {
         history.push('/settings');
         dispatch(setRedirect(false));
     }
@@ -85,7 +89,7 @@ const ProfileForm = ({profile}) => {
                     name={"contacts." + key}
                     type="text"
                     onChange={formik.handleChange}
-                    value={formik.values.contacts[key]}/>
+                    value={formik.values.contacts[key as keyof typeof formik.values.contacts]}/>
             })}
             <Input
                 labelText="looking for a job"
@@ -104,7 +108,7 @@ const ProfileForm = ({profile}) => {
                 onChange={formik.handleChange}
                 value={formik.values.lookingForAJobDescription}
             />
-            <Button buttonClass="form__button" text="Submit"/>
+            <Button className="form__button" text="Submit"/>
             {(Object.keys(formik.errors).length > 0) ? <div className="error">Error</div> : null}
             {(errorMessage) ? <div className="error">{errorMessage}</div> : null}
         </form>
